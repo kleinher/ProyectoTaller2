@@ -1,5 +1,5 @@
 //Establece el modelo del modulo GPRS a utilizar
-#define TINY_GSM_MODEM_SIM800
+#define TINY_GSM_MODEM_SIM900
 // Incluimos librerías DHT11 
 #include <DHT.h>
 #include <DHT_U.h>
@@ -25,7 +25,10 @@ DHT dht(DHTPIN, DHTTYPE); // Inicializamos el sensor DHT11
 //SIM800L TX y RX estan conectados a los pines 3 y 2 de Arduino Uno
 SoftwareSerial serialSIM(3, 2);
 
-const char* apn = "TuAPN"; // Configura el APN de tu proveedor de servicios móviles
+//Configuracion de APN (Access Point Name) de la red de servicio movil(En este caso, Tuenti)
+const char* apn = "internet.movil"; // Configura el APN de tu proveedor de servicios móviles
+const char* gprsUser = "internet"; // Usuario del APN por defecto de Tuenti
+const char* gprsPass = "internet"; // Contraseña del APN por defecto de Tuenti
 const char* gsmPin = "TuPIN"; // Si tu tarjeta SIM tiene un PIN, configúralo aquí
 
 const char* mqttServer = "163.10.3.73";
@@ -49,7 +52,7 @@ void setup() {
   
   //Begin serial communication with Arduino and SIM800L
   serialSIM.begin(9600);
-
+  Serial.println("Inicializando sensor y módulo GSM"); //Println para debug
   //Inicializacion sensor de temperatura 
   setupDHT11();
 
@@ -66,20 +69,20 @@ void setup() {
   // }
 
   // Conéctate a la red GPRS utilizando el APN
-  if (!modem.gprsConnect(apn)) {
+  if (!modem.gprsConnect(apn, gprsUser, gprsPass)) {
     Serial.println("Error al conectarse a la red GPRS");
     while (true);
   }
 
   // Configura el servidor MQTT
   mqtt.setServer(mqttServer, mqttPort);
+  Serial.println("El programa se inicializo correctamente"); //Println para debug
 }
 
 void loop() {
   if (!mqtt.connected()) {
     reconnect(); //Reconecto si se pierde la señal
   }
-
    //Leemos los datos del sensor DHT11.
   float temp = dht.readTemperature(); // Leemos la temperatura en grados centigrados (por defecto)
   // Comprobamos si ha habido algun error en la lectura
