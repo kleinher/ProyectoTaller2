@@ -22,7 +22,7 @@ def on_connect(client,userdata,flags,rc):
 		print("Conectado al broker "+broker+":"+str(port))
 	else:
 		print("Conexion a "+broker+":"+str(port)+" fallo, codigo "+str(rc))
-	client.subscribe("emqx/test")
+	client.subscribe(topic)
 
 def publish(client):
 	msg_count = 1
@@ -35,7 +35,7 @@ def publish(client):
 		#
 		# paso los datos a formato json: columnas fecha/hora de medicion, temperatura
 		#
-		msg=json.dumps({"fh_medicion":str(datetime.datetime.now()),"temperatura":str(random.randint(-20,60))},separators=(',',':'))
+		msg=json.dumps({"temp":str(random.randint(20,25))},separators=(',',':'))
 		result = client.publish(topic,msg,0,properties=properties)
 
 		status = result[0]
