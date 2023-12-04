@@ -74,5 +74,11 @@
   - Prueba exitosa de conexion entre el Arduino hacia el broker MQTT. Se hallo que el puerto con el que se realiza la conexion es el 1883 en vez del 8083 que se asumio al principio.
 - 6/11 - Consantino Palacio, Lucas Dehan, Victor Duarte:
   - Prueba exitosa de envio de mensajes JSON al broker MQTT.
+- 6/11 - Kleinubing Hernan
+  - Desarrollo de Frontend React y prueba de funcionamiento
 - 7/11 - Victor Duarte:
   - Prueba de enviar sensados de temperatura al broker MQTT.      
+- 20/11 - Kleinubing Hernan
+  - Agregado de persistencia de datos con conexión a DB en el backend
+  - Agregado de flask para exponer un endpoint y obtener información historia de temperatura
+  - Agregado de grafico xy al Front

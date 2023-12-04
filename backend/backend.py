@@ -61,10 +61,11 @@ def obtener_temperaturas():
     try:
         conn = mysql.connector.connect(**config)
         cursor = conn.cursor()
-        cursor.execute("SELECT fecha_hora, temp FROM medidas ORDER BY fecha_hora DESC")
+        cursor.execute("SELECT fecha_hora, temp FROM medidas ORDER BY fecha_hora DESC LIMIT 20")
         rows = cursor.fetchall()
         columnas = cursor.column_names
         resultados = [dict(zip(columnas, row)) for row in rows]
+        resultados.reverse()
         return jsonify(resultados)
     except Error as e:
         return jsonify({"error": str(e)}), 500

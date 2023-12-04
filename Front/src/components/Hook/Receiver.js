@@ -6,25 +6,29 @@ const Receiver = ({ payload }) => {
     if (payload.topic) {
       const parsedMessage = JSON.parse(payload.message);
       const temperatura = parsedMessage.temp;
-      setMessages(temperatura)
-      
+      if(temperatura != 'error'){
+        setMessages(temperatura)
+      }
+      else{
+        console.log('error')
+      }
     }
   }, [payload])
 
 
   return (
     <>
-    <h1 style={{color:'white'}}>Temperatura</h1>
-   <Thermometer
-    theme="dark"
-    value={messages}
-    max="100"
-    steps="5"
-    format="°C"
-    size="large"
-    height="400"
-  />
-  </>
+      <h1 style={{color:'white'}}>Temperatura</h1>
+        <Thermometer
+          theme="dark"
+          value={messages}
+          max="100"
+          steps="5"
+          format="°C"
+          size="large"
+          height="400"
+        />
+    </>
   );
 }
 
