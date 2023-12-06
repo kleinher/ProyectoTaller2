@@ -77,8 +77,14 @@
 - 6/11 - Kleinubing Hernan
   - Desarrollo de Frontend React y prueba de funcionamiento
 - 7/11 - Victor Duarte:
-  - Prueba de enviar sensados de temperatura al broker MQTT.      
+  - Prueba de enviar sensados de temperatura al broker MQTT.
+- 16/11 - Victor Duarte:
+  - Prueba de firmware con funciones correspondientes al objetivo secundario de la parte de control. Las pruebas son exitosas, pero en esta version se alterna el estado del LED a partir de recibir cualquier mensaje, por lo que se intentara pulir la funcion para solo responder a determinados comandos.       
 - 20/11 - Kleinubing Hernan
   - Agregado de persistencia de datos con conexión a DB en el backend
   - Agregado de flask para exponer un endpoint y obtener información historia de temperatura
   - Agregado de grafico xy al Front
+- 30/11 -  Consantino Palacio, Kleinubing Hernan, Victor Duarte:
+  - Prueba de version de firmware que solo responde a determinados mensajes que le llegan para activar procedimientos de control, pero esta version no puede conectarse al servidor. Posibles razones pueden ser falta de recursos del Arduino UNO para ejecutar correctamente todos los procesos necesarios, o alguna falla en la programacion. En caso de no dar con la causa y resolverla a tiempo, se usara el firmware como estaba el 16/11.
+- 4/12 - Victor Duarte:
+  - No se encontro una solucion para la version en desarollo del firmware, asi que se revertira a la version del 16/11 para la entrega final. 
