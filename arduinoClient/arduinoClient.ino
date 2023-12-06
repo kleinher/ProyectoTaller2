@@ -21,6 +21,11 @@ SoftwareSerial SerialAT(2, 3); // RX, TX
 // Configuracion del GSM PIN
 #define GSM_PIN "1234"
 
+//Pin del LED integrado de Arduino
+#define LED_PIN 13
+//Para controlar el estado del LED
+int ledStatus = LOW;
+
 //Configuracion de APN (Access Point Name) de la red de servicio movil(En este caso, Tuenti)
 const char apn[] = "internet.movil";
 const char gprsUser[] = "internet";
@@ -29,6 +34,7 @@ const char gprsPass[] = "internet";
 // Direccion del servidor MQTT
 const char* broker = "163.10.3.73";
 const char* topicTemp = "Arduino/temp";
+const char* topicControl = "Arduino/control";
 
 #include <TinyGsmClient.h>
 #include <PubSubClient.h>
@@ -48,7 +54,19 @@ unsigned long lastPing = 0;
 unsigned long t;
 
 // Maneja los mensajes MQTT recibidos aquí
-void mqttCallback(char* topic, byte* payload, unsigned int len) {}
+void mqttCallback(char* topic, byte* payload, unsigned int len) {
+  SerialMon.print("Mensaje recibido [");
+  SerialMon.print(topic);
+  SerialMon.print("]: ");
+  SerialMon.write(payload, len);
+  SerialMon.println();
+
+  // Solo procede si el el mensaje recibido corresponde a un topic en particular
+  if (String(topic) == topicControl) {
+    ledStatus = !ledStatus;
+    digitalWrite(LED_PIN, ledStatus);
+  }
+}
 
 boolean mqttConnect() {
   SerialMon.print("Conectando con ");
@@ -62,6 +80,7 @@ boolean mqttConnect() {
     return false;
   }
   SerialMon.println(" exito");
+  mqtt.subscribe(topicControl);
   return mqtt.connected();
 }
 
@@ -70,6 +89,8 @@ void setup() {
   // Set console baud rate
   SerialMon.begin(9600);
   delay(10);
+
+  pinMode(LED_PIN, OUTPUT);
 
   SerialMon.println("Iniciando sensor...");
   //Inicializacion sensor de temperatura 
@@ -167,10 +188,15 @@ void loop() {
   } else if (t - lastPing > 10000L) {
     lastPing = t;
     //Crear un objeto JSON
-    DynamicJsonDocument jsonDoc(16);
+    DynamicJsonDocument jsonDoc(32);
     float temp = dht.readTemperature(); // Leemos la temperatura en grados centigrados (por defecto)
-    jsonDoc["temp"] = temp;
-    char jsonBuffer[16];
+    if (!(isnan(temp))) { //Si no hubo error al obtener los datos del sensor DHT11.
+      jsonDoc["temp"] = temp;
+    }
+    else{
+      jsonDoc["temp"] = "error";
+    }
+    char jsonBuffer[32];
     serializeJson(jsonDoc, jsonBuffer);
     mqtt.publish(topicTemp, jsonBuffer);
     t = millis();
